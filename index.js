@@ -2,7 +2,7 @@ require('dotenv').config()
 const fs = require('node:fs');
 const path = require('node:path');
 const { Client, Collection, Events, GatewayIntentBits, Partials } = require('discord.js');
-
+const { Player } = require("discord-player");
 //const client = new Client({ intents: [GatewayIntentBits.Guilds, GuildVoiceStates] });
 
 
@@ -44,6 +44,10 @@ for (const file of eventFiles) {
 		client.on(event.name, (...args) => event.execute(...args));
 	}
 }
+
+
+const player = new Player(client);
+client.player = player;
 
 
 require('./deploy-commands.js');
