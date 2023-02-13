@@ -5,8 +5,8 @@ const playdl = require("play-dl");
 
 module.exports = {
 	data: new SlashCommandBuilder()
-		.setName('graj')
-		.setDescription('Gram utwór, który zechcesz!')
+		.setName('zagraj')
+		.setDescription('Dodaj utwór na początek kolejki!')
         .addStringOption(option =>
             option.setName('song')
             .setDescription('Song requested')
@@ -66,19 +66,16 @@ module.exports = {
         if (!track) 
             return void interaction.followUp({ content: `Nie znaleziono utworu: **${query}** !`  });
 
-        queue.addTrack(track);
-        
+        queue.tracks.unshift(track);
+
         if (!queue.playing) {
             await queue.play();
             return await interaction.followUp({ content: `Gram: **${track.title}**!` });
 
         }
         else {
-            return await interaction.followUp({ content: `Dodano do kolejki: **${track.title}**!` });
+            return await interaction.followUp({ content: `Dodano na początek kolejki: **${track.title}**!` });
         }
-
-
-
 
 	},
 };
