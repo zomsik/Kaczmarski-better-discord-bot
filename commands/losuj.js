@@ -6,7 +6,7 @@ const playdl = require("play-dl");
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('losuj')
-		.setDescription('Losuję jedną piosenka Kaczmarskiego!'),
+		.setDescription('Losuję jedną piosenkę Kaczmarskiego!'),
 
 	async execute(interaction) {
 
@@ -19,19 +19,21 @@ module.exports = {
 
         const query = interaction.options.getString("query");
 
+
         if(!interaction.client.player.queue) {
-        var queue = interaction.client.player.createQueue(interaction.guild, {
-            metadata: {
-                channel: interaction.channel
-            },
-            async onBeforeCreateStream(track, source, _queue) {
-                return (await playdl.stream(track.url, { discordPlayerCompatibility : true })).stream;
-            }
-        });
+            var queue = interaction.client.player.createQueue(interaction.guild, {
+                metadata: {
+                    channel: interaction.channel
+                },
+                async onBeforeCreateStream(track, source, _queue) {
+                    return (await playdl.stream(track.url, { discordPlayerCompatibility : true })).stream;
+                }
+            });
         }
         else {
             var queue = interaction.client.player.getQueue(interaction.member.guild.id);
         }
+
 
         try {
             if (!queue.connection) 
@@ -61,14 +63,15 @@ module.exports = {
         if (!track) 
             return void interaction.followUp({ content: `❌ | Nie znaleziono utworu: **${query}** !`  });
 
-        queue.addTrack(track);
-        console.log(queue.playing)
-
-        if (!queue.playing) {
+            queue.addTrack(track);            queue.addTrack(track);
+            console.log(queue.tracks.length);
+        if (!queue.playing && !queue.tracks.length) {
+            queue.addTrack(track);
             await queue.play();
             return await interaction.followUp({ content: `Gram: **${track.title}**!` });
         }
         else {
+            queue.addTrack(track);
             return await interaction.followUp({ content: `Dodano do kolejki: **${track.title}**!` });
         }
 

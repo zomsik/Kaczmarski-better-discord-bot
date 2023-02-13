@@ -28,16 +28,19 @@ module.exports = {
         const query = interaction.options.getString("song");
 
 
-        var queue = interaction.client.player.createQueue(interaction.guild, {
-            metadata: {
-                channel: interaction.channel
-            },
-            async onBeforeCreateStream(track, source, _queue) {
-                return (await playdl.stream(track.url, { discordPlayerCompatibility : true })).stream;
-            }
-
-
-        });
+        if(!interaction.client.player.queue) {
+            var queue = interaction.client.player.createQueue(interaction.guild, {
+                metadata: {
+                    channel: interaction.channel
+                },
+                async onBeforeCreateStream(track, source, _queue) {
+                    return (await playdl.stream(track.url, { discordPlayerCompatibility : true })).stream;
+                }
+            });
+        }
+        else {
+            var queue = interaction.client.player.getQueue(interaction.member.guild.id);
+        }
         
 
         try {
@@ -66,16 +69,17 @@ module.exports = {
         if (!track) 
             return void interaction.followUp({ content: `Nie znaleziono utworu: **${query}** !`  });
 
-        queue.tracks.unshift(track);
 
-        if (!queue.playing) {
+        if (!queue.playing && !queue.tracks.length) {
+            queue.tracks.unshift(track);
             await queue.play();
             return await interaction.followUp({ content: `Gram: **${track.title}**!` });
-
         }
         else {
+            queue.tracks.unshift(track);
             return await interaction.followUp({ content: `Dodano na początek kolejki: **${track.title}**!` });
         }
+
 
 	},
 };

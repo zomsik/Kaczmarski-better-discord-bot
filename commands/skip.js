@@ -1,7 +1,4 @@
 const { SlashCommandBuilder } = require('discord.js');
-const { CommandOptionType } = require('slash-create');
-const { QueryType } = require("discord-player");
-const playdl = require("play-dl");
 
 module.exports = {
 	data: new SlashCommandBuilder()
