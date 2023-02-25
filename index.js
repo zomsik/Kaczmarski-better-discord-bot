@@ -3,8 +3,6 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { Client, Collection, Events, GatewayIntentBits, Partials } = require('discord.js');
 const { Player } = require("discord-player");
-//const client = new Client({ intents: [GatewayIntentBits.Guilds, GuildVoiceStates] });
-
 
 const {Guilds, GuildMessages, GuildVoiceStates, GuildInvites, GuildMessageReactions, MessageContent} = GatewayIntentBits;
 const {User, Message, GuildMember, Channel} = Partials;
