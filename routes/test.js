@@ -5,8 +5,9 @@ const client = require('../client');
 
 router.get("/", async (req, res) => {
 
+    console.log(req.query.server);
     res.status(200).send({ message: "Wysłano request!" })
-    sendMessage('772230530045444137', '772230530623733792', 'I send this message via HTTP request', client);
+    //sendMessage('772230530045444137', '772230530623733792', 'I send this message via HTTP request', client);
 
     
 })
