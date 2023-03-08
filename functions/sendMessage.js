@@ -9,10 +9,10 @@ function sendMessage(serverId, channelId, message, client) {
       if (channel) {
         channel.send(message);
       } else {
-        console.log(`Nie znaleziono kanału o ID ${channelId}.`);
+        console.log(`No channel with ID: ${channelId}`);
       }
     } else {
-      console.log(`Nie znaleziono serwera o ID ${serverId}.`);
+      console.log(`No server with ID: ${serverId}`);
     }
   }
   

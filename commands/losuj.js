@@ -63,13 +63,14 @@ module.exports = {
         if (!track) 
             return void interaction.followUp({ content: `❌ | Nie znaleziono utworu: **${query}** !`  });
 
-        if (!queue.playing || !queue.tracks.length) {
-            queue.addTrack(track);
+        if (!queue.playing && !queue.tracks.length) {
+            await queue.addTrack(track);
+            queue.playing=true;
             await queue.play();
             return await interaction.followUp({ content: `Gram: **${track.title}**!` });
         }
         else {
-            queue.addTrack(track);
+            await queue.addTrack(track);
             return await interaction.followUp({ content: `Dodano do kolejki: **${track.title}**!` });
         }
 

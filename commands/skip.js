@@ -19,6 +19,10 @@ module.exports = {
         else {
 
         const track = queue.current;
+
+        if (queue.tracks.length == 0)
+            queue.playing=false;
+
         const skipped = queue.skip();
 
         if (skipped)

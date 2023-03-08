@@ -69,10 +69,10 @@ module.exports = {
         if (!track) 
             return void interaction.followUp({ content: `Nie znaleziono utworu: **${query}** !`  });
 
-
+        
         if (!queue.playing && !queue.tracks.length) {
             queue.tracks.unshift(track);
-            await queue.play();
+            queue.play();
             return await interaction.followUp({ content: `Gram: **${track.title}**!` });
         }
         else {

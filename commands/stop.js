@@ -24,8 +24,9 @@ module.exports = {
         {
             skippedSongs+=1;
         }
-        const skipped = queue.skip();
+        queue.playing=false;
 
+        const skipped = queue.skip();
         if (skipped) {
             if (skippedSongs==0)
                 return await interaction.followUp({ content: `Nic nie usunięto!` });

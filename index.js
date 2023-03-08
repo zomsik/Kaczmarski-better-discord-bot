@@ -2,7 +2,9 @@ require('dotenv').config()
 require('./deploy-commands.js');
 const client = require('./client.js');
 
-const testRoute = require("./routes/test")
+const getSongRoute = require("./routes/getPlayedSong")
+const skipSongRoute = require("./routes/skipPlayedSong")
+
 
 const cors = require('cors')
 const express = require('express');
@@ -16,7 +18,8 @@ app.use(cors())
 
 
 
-app.use("/api/test", testRoute)
+app.use("/api/getSong", getSongRoute)
+app.use("/api/skipSong", skipSongRoute)
 
 const port = process.env.PORT
 
