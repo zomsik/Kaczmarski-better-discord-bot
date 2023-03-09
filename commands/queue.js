@@ -5,8 +5,8 @@ const { EmbedBuilder } = require('discord.js');
 
 module.exports = {
 	data: new SlashCommandBuilder()
-		.setName('kolejka')
-		.setDescription('Wyświetlam kolejkę utworów!'),
+		.setName('queue')
+		.setDescription('Show songs queue!'),
 
 
 	async execute(interaction) {
@@ -16,13 +16,13 @@ module.exports = {
         await interaction.deferReply();
 
         if (!queue || !queue.tracks.length) {
-            return await interaction.followUp({ content: 'Brak utworów w kolejce!' });
+            return await interaction.followUp({ content: 'No songs in queue!' });
         }
         else {
 
         let embedReply = new EmbedBuilder()
         .setColor(0x0099FF)
-        .setTitle("Kolejka");
+        .setTitle("Queue");
         
 
         let content = "";

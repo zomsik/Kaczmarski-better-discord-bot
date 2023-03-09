@@ -1,4 +1,5 @@
 const { SlashCommandBuilder } = require('discord.js');
+const readServerVariables = require('../functions/readServerVariables');
 const writeServerVariables = require('../functions/writeServerVariables');
 
 module.exports = {
@@ -18,6 +19,8 @@ module.exports = {
 
         await interaction.deferReply();
 
+
+        if(readServerVariables())
 
         await writeServerVariables(interaction.member.guild.id, "apiPassword", apiPassword);
 

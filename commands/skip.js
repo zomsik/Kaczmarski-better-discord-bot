@@ -3,7 +3,7 @@ const { SlashCommandBuilder } = require('discord.js');
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('skip')
-		.setDescription('Pomiń aktualny utwór!'),
+		.setDescription('Skip currenct song!'),
 
 
 	async execute(interaction) {
@@ -14,7 +14,7 @@ module.exports = {
         await interaction.deferReply();
 
         if (!queue || !queue.playing) {
-            return await interaction.followUp({ content: 'Brak utworu do pominięcia!' });
+            return await interaction.followUp({ content: 'No song to skip!' });
         }
         else {
 
@@ -26,9 +26,9 @@ module.exports = {
         const skipped = queue.skip();
 
         if (skipped)
-            return await interaction.followUp({ content: `Pominięto utwór: **${track}**!` });
+            return await interaction.followUp({ content: `Skipped song: **${track}**!` });
         else
-            return await interaction.followUp({ content: `Błąd przy pomijaniu utworu!` });
+            return await interaction.followUp({ content: `Error while skipping song!` });
 
         }
 

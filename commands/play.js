@@ -5,8 +5,8 @@ const playdl = require("play-dl");
 
 module.exports = {
 	data: new SlashCommandBuilder()
-		.setName('zagraj')
-		.setDescription('Dodaj utwór na początek kolejki!')
+		.setName('play')
+		.setDescription('Play requested song!')
         .addStringOption(option =>
             option.setName('song')
             .setDescription('Song requested')
@@ -20,10 +20,10 @@ module.exports = {
         
 
 		if (!interaction.member.voice.channelId) 
-            return await interaction.reply({ content: "Wejdź na kanał, abym grał!", ephemeral: true });
+            return await interaction.reply({ content: "Join any voice channel first!", ephemeral: true });
 
         if (interaction.guild.members.me.voice.channelId && interaction.member.voice.channelId !== interaction.guild.members.me.voice.channelId) 
-            return await interaction.reply({ content: "Nie jesteś na moim obecnym kanale!", ephemeral: true });
+            return await interaction.reply({ content: "You are not on my voice channel right now!", ephemeral: true });
 
         const query = interaction.options.getString("song");
 
@@ -41,13 +41,12 @@ module.exports = {
         else {
             var queue = interaction.client.player.getQueue(interaction.member.guild.id);
         }
-        
 
         try {
             if (!queue.connection) await queue.connect(interaction.member.voice.channel);
         } catch {
             queue.destroy();
-            return await interaction.reply({ content: "Nie mogę dołączyć do Twojego kanału!", ephemeral: true });
+            return await interaction.reply({ content: "I am unable to join your voice channel!", ephemeral: true });
         }
 
         await interaction.deferReply();
@@ -59,7 +58,7 @@ module.exports = {
                 searchEngine: QueryType.AUTO
             })
             .catch(() => {
-                console.log('problem');
+                console.log('problem while searching song');
             })
             //.then(x => x.tracks.sort(function(a, b) { 
             //    return b.views - a.views;
@@ -67,18 +66,20 @@ module.exports = {
             .then(x => x.tracks[0]);
 
         if (!track) 
-            return void interaction.followUp({ content: `Nie znaleziono utworu: **${query}** !`  });
+            return void interaction.followUp({ content: `Song **${query}** not found!`  });
 
-        
         if (!queue.playing && !queue.tracks.length) {
-            queue.tracks.unshift(track);
-            queue.play();
-            return await interaction.followUp({ content: `Gram: **${track.title}**!` });
+            await queue.addTrack(track);
+            queue.playing=true;
+            await queue.play();
+            return await interaction.followUp({ content: `I play **${track.title}**!` });
         }
         else {
-            queue.tracks.unshift(track);
-            return await interaction.followUp({ content: `Dodano na początek kolejki: **${track.title}**!` });
+            await queue.addTrack(track);
+            return await interaction.followUp({ content: `Added to queue **${track.title}**!` });
         }
+
+
 
 
 	},

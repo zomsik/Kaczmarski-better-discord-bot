@@ -3,7 +3,7 @@ const { SlashCommandBuilder } = require('discord.js');
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('stop')
-		.setDescription('Usuń wszystkie dodane utwory z kolejki!'),
+		.setDescription('Delete queue and stop playing music!'),
 
 
 	async execute(interaction) {
@@ -12,8 +12,8 @@ module.exports = {
 
         await interaction.deferReply();
 
-        if (!queue || !queue.tracks.length) {
-            return await interaction.followUp({ content: 'Brak utworów do usunięcia!' });
+        if (!queue.playing ||!queue || !queue.tracks.length) {
+            return await interaction.followUp({ content: 'No songs to delete!' });
         }
         else {
 
@@ -29,16 +29,15 @@ module.exports = {
         const skipped = queue.skip();
         if (skipped) {
             if (skippedSongs==0)
-                return await interaction.followUp({ content: `Nic nie usunięto!` });
+                return await interaction.followUp({ content: `Deleted 0 songs!` });
             else if (skippedSongs==1)
-                return await interaction.followUp({ content: `Usunięto **${skippedSongs}** utwór!` });
-            else if (skippedSongs<=4)
-                return await interaction.followUp({ content: `Usunięto **${skippedSongs}** utwory!` });
+                return await interaction.followUp({ content: `Deleted **${skippedSongs}** song!` });
             else
-                return await interaction.followUp({ content: `Usunięto **${skippedSongs}** utworów!` });
+                return await interaction.followUp({ content: `Deleted **${skippedSongs}** songs!` });
+
         }
         else
-            return await interaction.followUp({ content: `Błąd przy usuwaniu!` });
+            return await interaction.followUp({ content: `Error while stoping!` });
 
         }
 

@@ -3,11 +3,11 @@ const { QueryType } = require("discord-player");
 
 module.exports = {
 	data: new SlashCommandBuilder()
-		.setName('usun')
-		.setDescription('Usuwa wybrany utwór z kolejki!')
+		.setName('delete')
+		.setDescription('Delete a song from queue!')
         .addStringOption(option =>
             option.setName('song')
-            .setDescription('Utwór do usunięcia')
+            .setDescription('Song to delete')
             .setRequired(true)
         ),
 
@@ -24,7 +24,7 @@ module.exports = {
 
 
         if (!queue || !queue.tracks.length) {
-            return await interaction.followUp({ content: 'Brak utworów do usunięcia!' });
+            return await interaction.followUp({ content: 'No song to delete!' });
         }
         else {
 
@@ -32,7 +32,7 @@ module.exports = {
         if (!isNaN(query)) {
             if (query < queue.tracks.length) {
                 queue.tracks.splice(query-1,1);
-                return await interaction.followUp({ content: `Usunięto utwór!` });
+                return await interaction.followUp({ content: `Song deleted!` });
             }
 
         } else {
@@ -56,11 +56,11 @@ module.exports = {
                 if (track.title == queue.tracks[i].title)
                 {
                     queue.tracks.splice(i,1);
-                    return await interaction.followUp({ content: `Usunięto utwór!` });
+                    return await interaction.followUp({ content: `Song deleted!` });
                 }
             }
 
-            return await interaction.followUp({ content: `Nic nie usunięto!` });
+            return await interaction.followUp({ content: `Nothing deleted!` });
 
 
         }
