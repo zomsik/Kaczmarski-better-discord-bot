@@ -1,4 +1,5 @@
 const { SlashCommandBuilder } = require('discord.js');
+const { useQueue } = require("discord-player");
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -8,25 +9,25 @@ module.exports = {
 
 	async execute(interaction) {
 
-        let queue = interaction.client.player.getQueue(interaction.member.guild.id);
+
+        let queue = useQueue(interaction.member.guild.id);
 
         await interaction.deferReply();
 
-        if (!queue.playing ||!queue || !queue.tracks.length) {
+        if (!queue.node.isPlaying() ||!queue || !queue.tracks.size) {
             return await interaction.followUp({ content: 'No songs to delete!' });
         }
         else {
 
-        let skippedSongs = queue.tracks.length;
-        queue.tracks=[];
+        let skippedSongs = queue.tracks.size;
+        queue.tracks.clear();
 
-        if (queue.playing)
+        if (queue.node.isPlaying())
         {
             skippedSongs+=1;
         }
-        queue.playing=false;
 
-        const skipped = queue.skip();
+        const skipped = queue.node.skip();
         if (skipped) {
             if (skippedSongs==0)
                 return await interaction.followUp({ content: `Deleted 0 songs!` });

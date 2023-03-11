@@ -1,6 +1,6 @@
 const { SlashCommandBuilder } = require('discord.js');
 const { CommandOptionType } = require('slash-create');
-const { QueryType } = require("discord-player");
+const { QueryType, Player } = require("discord-player");
 const playdl = require("play-dl");
 
 module.exports = {
@@ -16,9 +16,6 @@ module.exports = {
 
 	async execute(interaction) {
 
-
-        
-
 		if (!interaction.member.voice.channelId) 
             return await interaction.reply({ content: "Join any voice channel first!", ephemeral: true });
 
@@ -27,32 +24,39 @@ module.exports = {
 
         const query = interaction.options.getString("song");
 
+        const player = Player.singleton();
+        var queue = player.nodes.get(interaction.guild.id);
 
-        if(!interaction.client.player.queue) {
-            var queue = interaction.client.player.createQueue(interaction.guild, {
-                metadata: {
-                    channel: interaction.channel
-                },
-                async onBeforeCreateStream(track, source, _queue) {
-                    return (await playdl.stream(track.url, { discordPlayerCompatibility : true })).stream;
-                }
+        if(!queue) {
+            var queue = player.nodes.create(interaction.guild.id,
+            {
+              metadata: {
+               channel: interaction.member.voice.channel,
+               client: interaction.guild.members.me,
+               requestedBy: interaction.user,
+              },
+              selfDeaf: true,
+              volume: 80,
+              leaveOnEmpty: true,
+              leaveOnEmptyCooldown: 300000,
+              leaveOnEnd: true,
+              leaveOnEndCooldown: 300000,
             });
         }
-        else {
-            var queue = interaction.client.player.getQueue(interaction.member.guild.id);
-        }
+
 
         try {
-            if (!queue.connection) await queue.connect(interaction.member.voice.channel);
+            if (!queue.connection) 
+                await queue.connect(interaction.member.voice.channel);
         } catch {
-            queue.destroy();
+            queue.delete();
             return await interaction.reply({ content: "I am unable to join your voice channel!", ephemeral: true });
         }
 
         await interaction.deferReply();
 
 
-        const track = await interaction.client.player
+        const track = await player
             .search(query, {
                 requestedBy: interaction.user,
                 searchEngine: QueryType.AUTO
@@ -68,15 +72,14 @@ module.exports = {
         if (!track) 
             return void interaction.followUp({ content: `Song **${query}** not found!`  });
 
-        if (!queue.playing && !queue.tracks.length) {
-            await queue.addTrack(track);
-            queue.playing=true;
-            await queue.play();
-            return await interaction.followUp({ content: `I play **${track.title}**!` });
+        if (!queue.node.isPlaying() && !queue.tracks.size) {
+            queue.addTrack(track);
+            await queue.node.play()
+            return await interaction.followUp({ content: `I play: **${track.title}**!` });
         }
         else {
-            await queue.addTrack(track);
-            return await interaction.followUp({ content: `Added to queue **${track.title}**!` });
+            queue.addTrack(track);
+            return await interaction.followUp({ content: `Added to queue: **${track.title}**!` });
         }
 
 

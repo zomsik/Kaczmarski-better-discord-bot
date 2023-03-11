@@ -1,5 +1,7 @@
 const router = require("express").Router()
 const client = require('../client');
+const { useQueue } = require("discord-player");
+
 const readServerVariables = require("../functions/readServerVariables");
 
 
@@ -11,9 +13,9 @@ router.get("/", async (req, res) => {
 
     if (areAPIActivated)
     {
-        let queue = client.player.getQueue(guildID);
-
-        if(queue && queue.playing)
+        let queue = useQueue(guildID);
+        
+        if(queue && queue.node.isPlaying())
         {
             const song = queue.current.title;
             res.status(200).send({ message: song })

@@ -1,7 +1,5 @@
-const { SlashCommandBuilder } = require('discord.js');
-
-const { EmbedBuilder } = require('discord.js');
-
+const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+const { useQueue } = require("discord-player");
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -11,11 +9,13 @@ module.exports = {
 
 	async execute(interaction) {
 
-        let queue = interaction.client.player.getQueue(interaction.member.guild.id);
+
+        let queue = useQueue(interaction.member.guild.id);
+
 
         await interaction.deferReply();
 
-        if (!queue || !queue.tracks.length) {
+        if (!queue || !queue.tracks.size) {
             return await interaction.followUp({ content: 'No songs in queue!' });
         }
         else {
@@ -25,20 +25,21 @@ module.exports = {
         .setTitle("Queue");
         
 
+        
         let content = "";
-
-        if (queue.tracks.length >=10) {
+        const songsArray = queue.tracks.toArray()
+        if (queue.tracks.size >=10) {
             for (let i=0; i<10; i++)
             {
-                embedReply.addFields({ name: '\u200B', value: `**${i+1}.** ${queue.tracks[i].title}`});
-                content += `**${i+1}.** ${queue.tracks[i].title}\n`;
+                embedReply.addFields({ name: '\u200B', value: `**${i+1}.** ${songsArray[i].title}`});
+
             }
         }
         else {
-            for (let i=0; i<queue.tracks.length; i++)
+            for (let i=0; i<queue.tracks.size; i++)
             {
-                embedReply.addFields({ name: '\u200B', value: `**${i+1}.** ${queue.tracks[i].title}`});
-                content += `**${i+1}.** ${queue.tracks[i].title}\n`;
+                embedReply.addFields({ name: '\u200B', value: `**${i+1}.** ${songsArray[i].title}`});
+                //content += `**${i+1}.** ${queue.tracks[i].title}\n`;
             }
         }
 

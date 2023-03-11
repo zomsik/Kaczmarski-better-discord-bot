@@ -19,10 +19,7 @@ module.exports = {
 
         await interaction.deferReply();
 
-
-        if(readServerVariables())
-
-        await writeServerVariables(interaction.member.guild.id, "apiPassword", apiPassword);
+        writeServerVariables(interaction.member.guild.id, "apiPassword", apiPassword);
 
         return await interaction.followUp({ content: `APIs' password set!` });
 	},

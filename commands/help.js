@@ -17,13 +17,13 @@ module.exports = {
         .setTitle("Help");
 
 
-        embedReply.addFields({ name: '\u200B', value: `**/play <song>- ** Odtwarzam wybrany utwór\n`});
-        embedReply.addFields({ name: '\u200B', value: `**/fplay <song>- ** Odtwarzam wybrany utwór jako następny\n`});
-        embedReply.addFields({ name: '\u200B', value: `**/random- ** Odtwarzam losowy utwór Kaczmarskiego\n`});
-        embedReply.addFields({ name: '\u200B', value: `**/skip- ** Pomijam aktualnie grany utwór\n`});
-        embedReply.addFields({ name: '\u200B', value: `**/stop- ** Pomijam wszystkie dodane utwory\n`});
-        embedReply.addFields({ name: '\u200B', value: `**/delete <song>- ** Usuwam napisany utwór lub numer z kolejki\n`});
-        embedReply.addFields({ name: '\u200B', value: `**/queue- ** Wyświetlam aktualną kolejkę`});
+        embedReply.addFields({ name: '\u200B', value: `**/play <song>- ** Play selected song\n`});
+        embedReply.addFields({ name: '\u200B', value: `**/fplay <song>- ** Play selected song next\n`});
+        embedReply.addFields({ name: '\u200B', value: `**/random- ** Play random Kaczmarski song\n`});
+        embedReply.addFields({ name: '\u200B', value: `**/skip- ** Skip current song\n`});
+        embedReply.addFields({ name: '\u200B', value: `**/stop- ** Skip all songs\n`});
+        embedReply.addFields({ name: '\u200B', value: `**/delete <song>- ** Delete chosen song\n`});
+        embedReply.addFields({ name: '\u200B', value: `**/queue- ** Show queue`});
 
 
         return await interaction.followUp({ embeds: [embedReply] });

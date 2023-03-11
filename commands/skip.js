@@ -1,4 +1,5 @@
 const { SlashCommandBuilder } = require('discord.js');
+const { useQueue } = require("discord-player");
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -8,22 +9,19 @@ module.exports = {
 
 	async execute(interaction) {
 
-        let queue = interaction.client.player.getQueue(interaction.member.guild.id);
+        let queue = useQueue(interaction.member.guild.id);
 
         
         await interaction.deferReply();
 
-        if (!queue || !queue.playing) {
+        if (!queue || !queue.node.isPlaying()) {
             return await interaction.followUp({ content: 'No song to skip!' });
         }
         else {
 
-        const track = queue.current;
+        const track = queue.currentTrack;
 
-        if (queue.tracks.length == 0)
-            queue.playing=false;
-
-        const skipped = queue.skip();
+        const skipped = queue.node.skip();
 
         if (skipped)
             return await interaction.followUp({ content: `Skipped song: **${track}**!` });

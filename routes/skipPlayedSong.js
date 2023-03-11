@@ -2,7 +2,7 @@ const router = require("express").Router()
 const sendMessage = require('../functions/sendMessage');
 const client = require('../client');
 const readServerVariables = require("../functions/readServerVariables");
-
+const { useQueue } = require("discord-player");
 
 router.get("/", async (req, res) => {
 
@@ -16,15 +16,12 @@ router.get("/", async (req, res) => {
         if(req.query.apiPassword == apiPassword || req.query.apipassword == apiPassword || apiPassword == null)
         {
 
-            let queue = client.player.getQueue(guildID);
+            let queue = useQueue(guildID);
 
-            if(queue && queue.playing)
+            if(queue && queue.node.isPlaying())
             {
-
-                if (queue.tracks.length == 0)
-                    queue.playing=false;
                     
-                const skipped = queue.skip();
+                const skipped = queue.node.skip();
                 if (skipped)
                 {
                     sendMessage(guildID,req.query.channel,"Skipped song with API!",client);
