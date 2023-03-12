@@ -1,7 +1,8 @@
-const { SlashCommandBuilder } = require('discord.js');
-const { useQueue } = require("discord-player");
+import { SlashCommandBuilder } from 'discord.js';
+import { useQueue } from "discord-player";
+import { SlashCommand } from '../../types';
 
-module.exports = {
+const skip: SlashCommand = {
 	data: new SlashCommandBuilder()
 		.setName('skip')
 		.setDescription('Skip currenct song!'),
@@ -35,3 +36,4 @@ module.exports = {
 
 	},
 };
+export default skip;

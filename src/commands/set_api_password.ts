@@ -1,12 +1,12 @@
-const { SlashCommandBuilder } = require('discord.js');
-const readServerVariables = require('../functions/readServerVariables');
-const writeServerVariables = require('../functions/writeServerVariables');
+import { SlashCommandBuilder } from 'discord.js';
+import writeServerVariables from '../functions/writeServerVariables';
+import { SlashCommand } from '../../types';
 
-module.exports = {
+const set_api_password: SlashCommand = {
 	data: new SlashCommandBuilder()
 		.setName('set_api_password')
 		.setDescription('Set api password for some requests!')
-        .addStringOption(option =>
+        .addStringOption((option: any) =>
             option.setName('apipassword')
             .setDescription('Password (empty for none)')
         //.setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
@@ -24,3 +24,4 @@ module.exports = {
         return await interaction.followUp({ content: `APIs' password set!` });
 	},
 };
+export default set_api_password;

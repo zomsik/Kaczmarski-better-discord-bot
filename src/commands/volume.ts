@@ -1,11 +1,12 @@
-const { SlashCommandBuilder } = require('discord.js');
-const { useQueue } = require("discord-player");
+import { SlashCommandBuilder } from 'discord.js';
+import { useQueue } from "discord-player";
+import { SlashCommand } from '../../types';
 
-module.exports = {
+const volume: SlashCommand = {
 	data: new SlashCommandBuilder()
 		.setName('volume')
 		.setDescription('Set volume level')
-        .addStringOption(option =>
+        .addStringOption((option: any) =>
             option.setName('volumelevel')
             .setDescription('Volume (0-100)')
             .setRequired(true)
@@ -58,3 +59,5 @@ module.exports = {
 
 	},
 };
+
+export default volume;

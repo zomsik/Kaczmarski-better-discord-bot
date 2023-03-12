@@ -1,29 +1,28 @@
-const { SlashCommandBuilder } = require('discord.js');
-const { QueryType, Player } = require("discord-player");
+import { SlashCommandBuilder } from 'discord.js';
+import { QueryType } from "discord-player";
+import { SlashCommand } from '../../types';
 
-module.exports = {
+const remove: SlashCommand = {
 	data: new SlashCommandBuilder()
-		.setName('delete')
-		.setDescription('Delete a song from queue!')
-        .addStringOption(option =>
+		.setName('removed')
+		.setDescription('Remove a song from queue!')
+        .addStringOption((option: any) =>
             option.setName('song')
-            .setDescription('Song to delete')
+            .setDescription('Song to remove')
             .setRequired(true)
         ),
 
-	async execute(interaction) {
+    execute: async (interaction) => {
 
         const query = interaction.options.getString("song");
 
         await interaction.deferReply();
 
 
-        const player = Player.singleton();
-        let queue = player.nodes.get(interaction.member.guild.id);
-
+        var queue = interaction.client.player.nodes.get(interaction.guild.id);
 
         if (!queue || !queue.tracks.size) {
-            return await interaction.followUp({ content: 'No song to delete!' });
+            return await interaction.followUp({ content: 'No song to remove!' });
         }
         else {
 
@@ -38,7 +37,7 @@ module.exports = {
 
         } else {
 
-            const track = await player
+            const track = await interaction.client.player
             .search(query, {
                 requestedBy: interaction.user,
                 searchEngine: QueryType.AUTO
@@ -49,7 +48,7 @@ module.exports = {
             //.then(x => x.tracks.sort(function(a, b) { 
             //    return b.views - a.views;
             //}))
-            .then(x => x.tracks[0]);            
+            .then((x: any) => x.tracks[0]);            
 
 
             for (let i=0; i<queue.tracks.size; i++)
@@ -57,11 +56,11 @@ module.exports = {
                 if (track.title == songsArray[i].title)
                 {
                     queue.node.remove(i);
-                    return await interaction.followUp({ content: `Song **${track.title}** deleted!` });
+                    return await interaction.followUp({ content: `Song **${track.title}** removed!` });
                 }
             }
 
-            return await interaction.followUp({ content: `Nothing deleted!` });
+            return await interaction.followUp({ content: `Nothing removed!` });
 
 
         }
@@ -72,3 +71,5 @@ module.exports = {
 
 	},
 };
+
+export default remove;

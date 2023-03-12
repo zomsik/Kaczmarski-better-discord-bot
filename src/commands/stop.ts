@@ -1,7 +1,8 @@
-const { SlashCommandBuilder } = require('discord.js');
-const { useQueue } = require("discord-player");
+import { SlashCommandBuilder } from 'discord.js';
+import { useQueue } from "discord-player";
+import { SlashCommand } from '../../types';
 
-module.exports = {
+const stop: SlashCommand = {
 	data: new SlashCommandBuilder()
 		.setName('stop')
 		.setDescription('Delete queue and stop playing music!'),
@@ -14,7 +15,7 @@ module.exports = {
 
         await interaction.deferReply();
 
-        if (!queue.node.isPlaying() ||!queue || !queue.tracks.size) {
+        if (!queue || !queue.node.isPlaying() || !queue.tracks.size) {
             return await interaction.followUp({ content: 'No songs to delete!' });
         }
         else {
@@ -47,3 +48,4 @@ module.exports = {
 
 	},
 };
+export default stop;

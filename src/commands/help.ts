@@ -1,15 +1,14 @@
-const { SlashCommandBuilder } = require('discord.js');
+import { SlashCommandBuilder } from 'discord.js';
+import { EmbedBuilder } from 'discord.js';
+import { SlashCommand } from '../../types';
 
-const { EmbedBuilder } = require('discord.js');
-
-
-module.exports = {
+const help: SlashCommand = {
 	data: new SlashCommandBuilder()
 		.setName('help')
 		.setDescription('Show informations about commands!'),
 
 
-	async execute(interaction) {
+	execute: async interaction => {
         await interaction.deferReply();
 
         let embedReply = new EmbedBuilder()
@@ -22,7 +21,7 @@ module.exports = {
         embedReply.addFields({ name: '\u200B', value: `**/random- ** Play random Kaczmarski song\n`});
         embedReply.addFields({ name: '\u200B', value: `**/skip- ** Skip current song\n`});
         embedReply.addFields({ name: '\u200B', value: `**/stop- ** Skip all songs\n`});
-        embedReply.addFields({ name: '\u200B', value: `**/delete <song>- ** Delete chosen song\n`});
+        embedReply.addFields({ name: '\u200B', value: `**/remove <song>- ** Remove chosen song\n`});
         embedReply.addFields({ name: '\u200B', value: `**/queue- ** Show queue`});
 
 
@@ -30,3 +29,4 @@ module.exports = {
 
 	},
 };
+export default help;

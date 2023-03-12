@@ -1,18 +1,14 @@
-const { SlashCommandBuilder } = require('discord.js');
-const { CommandOptionType } = require('slash-create');
-const { QueryType, Player } = require("discord-player");
-const playdl = require("play-dl");
+import { SlashCommandBuilder } from 'discord.js';
+import { QueryType } from "discord-player";
+import data from "../data";
 
-module.exports = {
+
+import { SlashCommand } from '../../types';
+
+const random: SlashCommand = {
 	data: new SlashCommandBuilder()
-		.setName('fplay')
-		.setDescription('Add and play this song next!')
-        .addStringOption(option =>
-            option.setName('song')
-            .setDescription('Song requested')
-            .setRequired(true)
-        ),
-
+		.setName('random')
+		.setDescription('I play a randomly selected song of Kaczmarski!'),
 
 	async execute(interaction) {
 
@@ -23,13 +19,14 @@ module.exports = {
         if (interaction.guild.members.me.voice.channelId && interaction.member.voice.channelId !== interaction.guild.members.me.voice.channelId) 
             return await interaction.reply({ content: "You are not on my voice channel right now!", ephemeral: true });
 
-        const query = interaction.options.getString("song");
-        
-        const player = Player.singleton();
-        var queue = player.nodes.get(interaction.guild.id);
+
+        await interaction.deferReply();
+
+        const query = interaction.options.getString("query");
+        var queue = interaction.client.player.nodes.get(interaction.guild.id);
 
         if(!queue) {
-            var queue = player.nodes.create(interaction.guild.id,
+            var queue = interaction.client.player.nodes.create(interaction.guild.id,
             {
               metadata: {
                channel: interaction.member.voice.channel,
@@ -54,36 +51,32 @@ module.exports = {
             return await interaction.reply({ content: "I am unable to join your voice channel!", ephemeral: true });
         }
 
-        await interaction.deferReply();
+        const randomize = Math.floor(Math.random()*data.length);
 
-
-        const track = await player
-            .search(query, {
+        const track = await interaction.client.player
+            .search(data[randomize][1], {
                 requestedBy: interaction.user,
                 searchEngine: QueryType.AUTO
             })
             .catch(() => {
                 console.log('problem');
             })
-            //.then(x => x.tracks.sort(function(a, b) { 
-            //    return b.views - a.views;
-            //}))
-            .then(x => x.tracks[0]);
+            .then((x: any) => x.tracks[0]);
 
         if (!track) 
             return void interaction.followUp({ content: `Song **${query}** not found!`  });
 
-
         if (!queue.node.isPlaying() && !queue.tracks.size) {
             queue.addTrack(track);
-            await queue.node.play();
+            await queue.node.play()
             return await interaction.followUp({ content: `I play: **${track.title}**!` });
         }
         else {
-            queue.insertTrack(track, 0);
-            return await interaction.followUp({ content: `Added to queue as next song: **${track.title}**!` });
+            queue.addTrack(track);
+            return await interaction.followUp({ content: `Added to queue: **${track.title}**!` });
         }
 
 
 	},
 };
+export default random;

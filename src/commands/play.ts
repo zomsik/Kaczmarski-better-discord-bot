@@ -1,15 +1,19 @@
-const { SlashCommandBuilder } = require('discord.js');
-const { CommandOptionType } = require('slash-create');
-const { QueryType, Player } = require("discord-player");
-const playdl = require("play-dl");
+import { SlashCommandBuilder } from 'discord.js';
+import { QueryType } from "discord-player";
+import { SlashCommand } from '../../types';
 
-module.exports = {
+const play: SlashCommand = {
 	data: new SlashCommandBuilder()
-		.setName('random')
-		.setDescription('I play a randomly selected song of Kaczmarski!'),
+		.setName('play')
+		.setDescription('Play requested song!')
+        .addStringOption((option: any) =>
+            option.setName('song')
+            .setDescription('Song requested')
+            .setRequired(true)
+        ),
+
 
 	async execute(interaction) {
-
 
 		if (!interaction.member.voice.channelId) 
             return await interaction.reply({ content: "Join any voice channel first!", ephemeral: true });
@@ -17,15 +21,12 @@ module.exports = {
         if (interaction.guild.members.me.voice.channelId && interaction.member.voice.channelId !== interaction.guild.members.me.voice.channelId) 
             return await interaction.reply({ content: "You are not on my voice channel right now!", ephemeral: true });
 
+        const query = interaction.options.getString("song");
 
-        await interaction.deferReply();
-
-        const query = interaction.options.getString("query");
-        const player = Player.singleton();
-        var queue = player.nodes.get(interaction.guild.id);
+        var queue = interaction.client.player.nodes.get(interaction.guild.id);
 
         if(!queue) {
-            var queue = player.nodes.create(interaction.guild.id,
+            var queue = interaction.client.player.nodes.create(interaction.guild.id,
             {
               metadata: {
                channel: interaction.member.voice.channel,
@@ -50,19 +51,21 @@ module.exports = {
             return await interaction.reply({ content: "I am unable to join your voice channel!", ephemeral: true });
         }
 
-        const data = require('../data')
+        await interaction.deferReply();
 
-        const losuj = Math.floor(Math.random()*data.Utwory.length);
 
-        const track = await player
-            .search(data.Utwory[losuj][1], {
+        const track = await interaction.client.player
+            .search(query, {
                 requestedBy: interaction.user,
                 searchEngine: QueryType.AUTO
             })
             .catch(() => {
-                console.log('problem');
+                console.log('problem while searching song');
             })
-            .then(x => x.tracks[0]);
+            //.then(x => x.tracks.sort(function(a, b) { 
+            //    return b.views - a.views;
+            //}))
+            .then((x: any) => x.tracks[0]);
 
         if (!track) 
             return void interaction.followUp({ content: `Song **${query}** not found!`  });
@@ -78,5 +81,8 @@ module.exports = {
         }
 
 
+
+
 	},
 };
+export default play;

@@ -1,13 +1,13 @@
-const { SlashCommandBuilder } = require('discord.js');
-const { CommandOptionType } = require('slash-create');
-const { QueryType, Player } = require("discord-player");
-const playdl = require("play-dl");
+import { SlashCommandBuilder } from 'discord.js';
+import { QueryType } from "discord-player";
 
-module.exports = {
+import { SlashCommand } from '../../types';
+
+const fplay: SlashCommand = {
 	data: new SlashCommandBuilder()
-		.setName('play')
-		.setDescription('Play requested song!')
-        .addStringOption(option =>
+		.setName('fplay')
+		.setDescription('Add and play this song next!')
+        .addStringOption((option: any) =>
             option.setName('song')
             .setDescription('Song requested')
             .setRequired(true)
@@ -16,6 +16,7 @@ module.exports = {
 
 	async execute(interaction) {
 
+
 		if (!interaction.member.voice.channelId) 
             return await interaction.reply({ content: "Join any voice channel first!", ephemeral: true });
 
@@ -23,12 +24,11 @@ module.exports = {
             return await interaction.reply({ content: "You are not on my voice channel right now!", ephemeral: true });
 
         const query = interaction.options.getString("song");
-
-        const player = Player.singleton();
-        var queue = player.nodes.get(interaction.guild.id);
+        
+        var queue = interaction.client.player.nodes.get(interaction.guild.id);
 
         if(!queue) {
-            var queue = player.nodes.create(interaction.guild.id,
+            var queue = interaction.client.player.nodes.create(interaction.guild.id,
             {
               metadata: {
                channel: interaction.member.voice.channel,
@@ -56,34 +56,34 @@ module.exports = {
         await interaction.deferReply();
 
 
-        const track = await player
+        const track = await interaction.client.player
             .search(query, {
                 requestedBy: interaction.user,
                 searchEngine: QueryType.AUTO
             })
             .catch(() => {
-                console.log('problem while searching song');
+                console.log('problem');
             })
             //.then(x => x.tracks.sort(function(a, b) { 
             //    return b.views - a.views;
             //}))
-            .then(x => x.tracks[0]);
+            .then((x: any) => x.tracks[0]);
 
         if (!track) 
             return void interaction.followUp({ content: `Song **${query}** not found!`  });
 
+
         if (!queue.node.isPlaying() && !queue.tracks.size) {
             queue.addTrack(track);
-            await queue.node.play()
+            await queue.node.play();
             return await interaction.followUp({ content: `I play: **${track.title}**!` });
         }
         else {
-            queue.addTrack(track);
-            return await interaction.followUp({ content: `Added to queue: **${track.title}**!` });
+            queue.insertTrack(track, 0);
+            return await interaction.followUp({ content: `Added to queue as next song: **${track.title}**!` });
         }
-
-
 
 
 	},
 };
+export default fplay;

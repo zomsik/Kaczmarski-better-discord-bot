@@ -1,4 +1,4 @@
-const Utwory = 
+const data = 
     [
         ["1788","https://www.youtube.com/watch?v=VtsMVI8Fles"],
         ["afganistan","https://www.youtube.com/watch?v=LymahcG-hBc"],
@@ -448,4 +448,4 @@ const Utwory =
         ["zywioly","https://www.youtube.com/watch?v=Oz7NCCCyg5Y"]
     ]
 
-exports.Utwory = Utwory;
+export default data;

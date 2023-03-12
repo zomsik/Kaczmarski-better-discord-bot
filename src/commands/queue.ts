@@ -1,7 +1,8 @@
-const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
-const { useQueue } = require("discord-player");
+import { SlashCommandBuilder, EmbedBuilder } from 'discord.js';
+import { useQueue } from "discord-player";
+import { SlashCommand } from '../../types';
 
-module.exports = {
+const queue: SlashCommand = {
 	data: new SlashCommandBuilder()
 		.setName('queue')
 		.setDescription('Show songs queue!'),
@@ -54,3 +55,4 @@ module.exports = {
 
 	},
 };
+export default queue;
