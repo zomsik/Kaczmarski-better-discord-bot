@@ -13,7 +13,7 @@ router.get("/", async (req: Request, res: Response) => {
 
   const client = KaczmarskiClient.Instance;
 
-  const areAPIActivated = readServerVariables(guildID,"areAPIActivated");
+  const areAPIActivated: boolean | string = readServerVariables(guildID,"areAPIActivated");
 
   if (areAPIActivated) {
     const apiPassword: boolean | string = readServerVariables(guildID, "apiPassword");

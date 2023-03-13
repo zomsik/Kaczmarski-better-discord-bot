@@ -6,6 +6,7 @@ import deployCommands from './deployCommands';
 
 import getSongRoute from './routes/getPlayedSong';
 import skipSongRoute from './routes/skipPlayedSong';
+import changeVolumeRoute from './routes/changeVolume';
 
 import cors from 'cors';
 import express from 'express';
@@ -20,6 +21,7 @@ app.use(cors());
 
 app.use('/api/getSong', getSongRoute);
 app.use('/api/skipSong', skipSongRoute);
+app.use('/api/changeVolume', changeVolumeRoute);
 
 const port = process.env.PORT;
 

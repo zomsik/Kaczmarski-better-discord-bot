@@ -9,4 +9,4 @@ RUN npm install
 COPY . /usr/src/bot
 
 EXPOSE 80
-CMD ["node", "index.js"]
+CMD ["node", "build/index.js"]

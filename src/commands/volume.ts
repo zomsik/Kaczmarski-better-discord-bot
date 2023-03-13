@@ -51,7 +51,7 @@ const volume: SlashCommand = {
 
             queue.node.setVolume(parseInt(volumeSelected,10));
 
-            return await interaction.followUp({ content: `Set volume level to **${volumeSelected}**!` });
+            return await interaction.followUp({ content: `Volume level set to **${volumeSelected}**!` });
         }
 
         
