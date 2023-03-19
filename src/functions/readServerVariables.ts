@@ -23,6 +23,11 @@ function readServerVariables(serverId: string, key: string): string | boolean {
     const serverData = fs.readFileSync(path.resolve(__dirname, fileName));
     const serverJson = JSON.parse(serverData.toString());
 
+    
+    if(!serverJson || !serverJson[serverId]) {
+      return false;
+    }
+
     if (key in serverJson[serverId]) {
         return serverJson[serverId][key];
     }
