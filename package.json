@@ -33,6 +33,7 @@
     "opusscript": "^0.0.8",
     "play-dl": "^1.9.6",
     "slash-create": "^5.11.0",
+    "socket.io": "^4.6.1",
     "soundcloud-scraper": "^5.0.3",
     "spotify-url-info": "^3.2.3",
     "youtube-sr": "^4.3.4",
