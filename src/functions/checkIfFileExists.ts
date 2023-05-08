@@ -1,14 +1,13 @@
 import fs from 'fs';
 import path from 'path';
 
-function checkIfFileExists(fileName: string): boolean {
+function checkIfFileExists(fileName: string): void {
 
   if (!fs.existsSync(path.resolve(__dirname, fileName))) {
-    return false;
-  } else {
-    return true;
+    const emptyObject: any = {};
+    fs.writeFileSync(path.resolve(__dirname, fileName), JSON.stringify(emptyObject));
   }
-
+  
 }
 
 export default checkIfFileExists;
