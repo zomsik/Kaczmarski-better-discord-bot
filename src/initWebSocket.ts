@@ -2,6 +2,7 @@ import { Server as HttpServer} from "http"
 import { Server, Socket } from "socket.io";
 import checkIfFileExists from "./functions/checkIfFileExists";
 import readServerVariables from "./functions/readServerVariables";
+import handleWebSocketMessage from "./handleWebSocketMessage";
 
 
 export default function initWebSocket(server: HttpServer) {
@@ -28,16 +29,17 @@ export default function initWebSocket(server: HttpServer) {
         next();
       })
     .on('connection', (socket: Socket) => {
-        const request = socket.handshake;
+        const serverId: string = socket.handshake.headers.server as string;
 
-        socket.on('message', function(message) {
-            io.emit('message', "return");
-            console.log("Received: "+message)
+        socket.join(serverId);
+
+        socket.on('message', function(message: string) {
+            handleWebSocketMessage(io, socket, serverId, message)
         });
 
         socket.on('disconnect', () => {
-            console.log('Client disconnected');
-        });
+          });
+
     });
 
     return io;
