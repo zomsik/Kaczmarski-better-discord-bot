@@ -1,9 +1,10 @@
 import { useQueue } from "discord-player";
-import { Server, Socket } from "socket.io";
+import { Socket } from "socket.io";
 import { WebSocketRequestType } from '../types';
+import KaczmarskiClient from "./KaczmarskiClient";
 
 
-export default function handleWebSocketMessage(io: Server, socket: Socket, serverId: string, message: string) {
+export default async function handleWebSocketMessage(socket: Socket, serverId: string, message: string) {
 
     switch (message.toLowerCase()) {
         case WebSocketRequestType.GetSong: {
@@ -11,19 +12,25 @@ export default function handleWebSocketMessage(io: Server, socket: Socket, serve
 
             if (queue && queue.node.isPlaying()) {
                 if (queue.currentTrack) {
-                    io.emit('response', queue.currentTrack.title);
+                    socket.emit('response', queue.currentTrack.title);
                 }
                 else {
-                    io.emit('response', 'Song without title');
+                    socket.emit('response', 'Song without title');
                 }
             } else {
-                io.emit('response', 'No music right now');
+                socket.emit('response', 'No music right now');
             }
 
             break;
         }
+        case WebSocketRequestType.GetServerName: {
+            const client = KaczmarskiClient.Instance;
+            const guild = await client.guilds.fetch(serverId)
+            socket.emit('response', guild.name);
+            break;
+        }
         default: {
-            io.emit('response', 'Wrong request');
+            socket.emit('response', 'Wrong request');
             break;
         }
     }

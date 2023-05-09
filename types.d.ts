@@ -14,6 +14,7 @@ export interface Event {
 }
 
 export const enum WebSocketRequestType {
+    GetServerName = "getservername",
     GetSong = "getsong",
     SkipSong = "skipsong"
 }
