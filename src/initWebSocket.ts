@@ -33,8 +33,8 @@ export default function initWebSocket(server: HttpServer) {
 
         socket.join(serverId);
 
-        socket.on('message', function(message: string) {
-            handleWebSocketMessage(socket, serverId, message)
+        socket.on('message', function(request) {
+            handleWebSocketMessage(socket, serverId, request)
         });
 
         socket.on('disconnect', () => {
