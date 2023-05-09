@@ -6,10 +6,7 @@ function writeServerVariables(serverId: string, newKey: string, newValue: boolea
 
   const fileName = '../serversVariables.json';
 
-  if (!checkIfFileExists(fileName)) {
-    const emptyObject: any = {};
-    fs.writeFileSync(path.resolve(__dirname, fileName), JSON.stringify(emptyObject));
-  }
+  checkIfFileExists(fileName)
     
   const serversData = fs.readFileSync(path.resolve(__dirname, fileName));
   const serversJson: { [key: string]: any } = JSON.parse(serversData.toString());

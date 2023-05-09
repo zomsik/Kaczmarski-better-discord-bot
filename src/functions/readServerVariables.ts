@@ -9,10 +9,8 @@ function readServerVariables(serverId: string, key: string): string | boolean {
   const client = KaczmarskiClient.Instance;
 
 
-  if (!checkIfFileExists(fileName)) {
-    const emptyObject: any = {};
-    fs.writeFileSync(path.resolve(__dirname, fileName), JSON.stringify(emptyObject));
-  }
+  checkIfFileExists(fileName)
+
 
   const server = client.guilds.cache.get(serverId);
 
