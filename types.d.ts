@@ -13,6 +13,11 @@ export interface Event {
     execute: (...args?) => void
 }
 
+export const enum WebSocketRequestType {
+    GetSong = "getsong",
+    SkipSong = "skipsong"
+}
+
 declare module "discord.js" {
     export interface Client {
         commands: Collection<string, SlashCommand>
