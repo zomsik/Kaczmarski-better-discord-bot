@@ -6,7 +6,16 @@ import handleWebSocketMessage from "./handleWebSocketMessage";
 
 
 export default function initWebSocket(server: HttpServer) {
-    const io = new Server(server, {});
+    const io = new Server(server, {
+      transports: ["websocket", "polling"],
+      allowEIO3: true,
+      cors: {
+        origin: "*",
+        methods: ["GET", "POST"],
+        allowedHeaders: "*",
+        credentials: true,
+      },
+    });
 
     io.use((socket, next) => {
         const headers = socket.handshake.headers;
