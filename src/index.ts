@@ -17,3 +17,4 @@ const port = process.env.PORT;
 httpServer.listen(port!, () => console.log(`Nasłuchiwanie na porcie ${port}`));
 
 deployCommands(client);
+export { webSocketServer };

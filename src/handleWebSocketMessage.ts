@@ -1,12 +1,19 @@
-import { useQueue } from "discord-player";
+import { GuildQueue, useQueue } from "discord-player";
 import { Socket } from "socket.io";
 import { WebSocketRequestType } from '../types';
 import KaczmarskiClient from "./KaczmarskiClient";
 import sendMessage from "./functions/sendMessage";
 import changeVolume from "./functions/changeVolume";
-
+import checkIfFileExists from "./functions/checkIfFileExists";
+import readServerVariables from "./functions/readServerVariables";
+import { webSocketServer } from './index';
 
 export default async function handleWebSocketMessage(socket: Socket, serverId: string, request: any) {
+
+    if (request.command === undefined){
+        socket.emit('response', 'Wrong request');
+        return;
+    }
 
     switch (request.command.toLowerCase()) {
         case WebSocketRequestType.GetSong: {
@@ -89,4 +96,20 @@ export default async function handleWebSocketMessage(socket: Socket, serverId: s
         }
     }
 
+}
+
+export async function emitNewSong(queue: GuildQueue<any>) {
+    checkIfFileExists('../serversVariables.json')
+    const serverId = queue.guild.id;
+
+    const areWebSocketsActivated: boolean | string = readServerVariables(serverId,"areWebSocketActivated");
+    if (!areWebSocketsActivated) {
+        return;
+    }
+    
+    if (queue.currentTrack) {
+        webSocketServer.to(serverId).emit("newsong", queue.currentTrack.title as string);
+    } else {
+        webSocketServer.to(serverId).emit("newsong", "No music anymore");
+    }
 }
