@@ -10,8 +10,17 @@ import { webSocketServer } from './index';
 
 export default async function handleWebSocketMessage(socket: Socket, serverId: string, request: any) {
 
+    try {
+        if (typeof request === 'string') {
+          request = JSON.parse(request);
+        }
+      } catch (error) {
+        socket.emit('response', 'Request is not in JSON type');
+        return
+      }
+
     if (request.command === undefined){
-        socket.emit('response', 'Wrong request');
+        socket.emit('response', 'Request have wrong attributes');
         return;
     }
 
