@@ -24,6 +24,7 @@
     "@discordjs/opus": "^0.9.0",
     "@discordjs/util": "^0.1.0",
     "@discordjs/voice": "^0.14.0",
+    "@distube/ytdl-core": "^4.11.10",
     "avconv": "^3.1.0",
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
