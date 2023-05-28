@@ -105,12 +105,11 @@ export default async function handleWebSocketMessage(socket: Socket, serverId: s
                 const songsArray = queue.tracks.toArray();
                 if (songsArray[0]) {
                     socket.emit('response', songsArray[0].title);
-                }
-                else {
-                    socket.emit('response', 'Song without title');
+                } else {
+                    socket.emit('response', 'No songs in queue');
                 }
             } else {
-                socket.emit('response', 'No songs in queue');
+                socket.emit('response', 'No queue');
             }
             break;
         }
