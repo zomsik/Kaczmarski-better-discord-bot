@@ -17,7 +17,8 @@ export const enum WebSocketRequestType {
     GetServerName = "getservername",
     ChangeVolume = "changevolume",
     GetSong = "getsong",
-    SkipSong = "skipsong"
+    SkipSong = "skipsong",
+    NextSong = "nextsong"
 }
 
 declare module "discord.js" {

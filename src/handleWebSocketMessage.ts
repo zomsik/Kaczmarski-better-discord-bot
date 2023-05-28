@@ -70,25 +70,25 @@ export default async function handleWebSocketMessage(socket: Socket, serverId: s
                 const client = KaczmarskiClient.Instance;
 
                 if (isNaN(volume)) {
-                    socket.emit('response', 'Volume is not a number');
+                    socket.emit('newvolume', 'Volume is not a number');
                     return;
                 }
         
                 if (volume > 100 || volume < 0) {
-                    socket.emit('response', 'Volume level must be a number between 0-100');
+                    socket.emit('newvolume', 'Volume level must be a number between 0-100');
                     return;
                 } else {
                     if (changeVolume(queue, volume, operation, previousVolume)) {
-                        socket.emit('response', `Volume level set to ${queue.node.volume}`);
+                        socket.emit('newvolume', `Volume level set to ${queue.node.volume}`);
                         if (request.channel)
                             sendMessage(serverId, request.channel, `Volume changed with WebSocket to ${queue.node.volume}!`, client);
                     } else {
-                        socket.emit('response', 'Undefined volume change operation');
+                        socket.emit('newvolume', 'Undefined volume change operation');
                     }
                 }
             }
             else {
-                socket.emit('response', 'Could not set volume');
+                socket.emit('newvolume', 'Could not set volume');
             }
             break;
         }
@@ -97,6 +97,21 @@ export default async function handleWebSocketMessage(socket: Socket, serverId: s
             const client = KaczmarskiClient.Instance;
             const guild = await client.guilds.fetch(serverId)
             socket.emit('response', guild.name);
+            break;
+        }
+        case WebSocketRequestType.NextSong: {
+            let queue = useQueue(serverId);
+            if (queue) {
+                const songsArray = queue.tracks.toArray();
+                if (songsArray[0]) {
+                    socket.emit('response', songsArray[0].title);
+                }
+                else {
+                    socket.emit('response', 'Song without title');
+                }
+            } else {
+                socket.emit('response', 'No songs in queue');
+            }
             break;
         }
         default: {
