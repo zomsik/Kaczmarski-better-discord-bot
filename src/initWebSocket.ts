@@ -30,8 +30,8 @@ export default function initWebSocket(server: HttpServer) {
             next(new Error('Disconnected - websockets are disabled!'))
         }
 
-        const webSocketPassword: boolean | string = readServerVariables(headers.authorization as string, "webSocketPassword");
-        if (webSocketPassword != headers.authorization && typeof webSocketPassword == "string") {
+        const webSocketPassword: boolean | string = readServerVariables(headers.server as string, "webSocketPassword");
+        if (typeof webSocketPassword == "string" && webSocketPassword != headers.authorization) {
             next(new Error('Disconnected - wrong authorization password!'))
         }
 
